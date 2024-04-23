@@ -1,0 +1,59 @@
+{
+    "development": {
+        "PORT": 4000,
+        "user": "jona_gr_SQLLogin_1",
+        "password": "ndl69ukop5",
+        "database": "m3u_project",
+        "host": "m3u_project.mssql.somee.com",
+        "dialect": "mssql",
+        "email_app": {
+            "service": "gmail",
+            "user": "jmoneyasistence@gmail.com",
+            "pass": "dqkq ixtq vpmb bmaw"
+        },
+        "path": {
+            "user": "/api/user"
+        },
+        "autorization": {
+            "secret_key": "hgdtei7564jcnbjsd974?6gasodsfhi12##@456"
+        }
+    },
+    "test": {
+        "PORT": 4000,
+        "user": "root",
+        "password": "",
+        "database": "m2u",
+        "host": "localhost",
+        "dialect": "mssql",
+        "email_app": {
+            "service": "gmail",
+            "user": "jmoneyasistence@gmail.com",
+            "pass": "dqkq ixtq vpmb bmaw"
+        },
+        "path": {
+            "user": "/api/user"
+        },
+        "autorization": {
+            "secret_key": "hgdtei7564jcnbjsd974?6gasodsfhi12##@456"
+        }
+    },
+    "production": {
+        "PORT": 4000,
+        "user": "root",
+        "password": "",
+        "database": "m2u",
+        "host": "localhost",
+        "dialect": "mssql",
+        "email_app": {
+            "service": "gmail",
+            "user": "jmoneyasistence@gmail.com",
+            "pass": "dqkq ixtq vpmb bmaw"
+        },
+        "path": {
+            "user": "/api/user"
+        },
+        "autorization": {
+            "secret_key": "hgdtei7564jcnbjsd974?6gasodsfhi12##@456"
+        }
+    }
+}
