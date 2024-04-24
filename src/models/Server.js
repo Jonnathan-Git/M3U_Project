@@ -2,11 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import Config from '../config/Config.js';
 import DataBase from '../database/connection.js';
+import UserRoutes from '../routes/UserRoutes.js';
 
 class Server {
+    
     constructor() {
         this.app = express();
         this.port = Config.PORT;
+        this.userRoutes = new UserRoutes();
 
         this.DataBaseConnection();
         this.middlewares();
@@ -48,6 +51,7 @@ class Server {
     }
 
     routes() {
+        this.app.use(Config.path.user, this.userRoutes.getRoutes());
     }
 
     /**************************************************
@@ -57,7 +61,7 @@ class Server {
     async DataBaseConnection() {
        try {
         await DataBase.authenticate();
-        DataBase.sync({ alter: true });
+        // DataBase.sync({ force: true });
         console.log('Connection has been established successfully.');
        } catch (error) {
         console.error('Unable to connect to the database:', error);
