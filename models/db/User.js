@@ -1,4 +1,4 @@
-import DataBase from "../../database/connection.js";
+import DataBase from "../../database/Connection.js";
 import { DataTypes } from "sequelize";
 
 const User = DataBase.define("Users", {
