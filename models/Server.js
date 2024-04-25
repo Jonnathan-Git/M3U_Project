@@ -8,7 +8,7 @@ class Server {
     
     constructor() {
         this.app = express();
-        this.port = Config.PORT;
+        this.port = process.env.PORT || Config.PORT;
         this.userRoutes = new UserRoutes();
 
         // this.DataBaseConnection();
