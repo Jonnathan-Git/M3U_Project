@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import Config from '../config/Config.js';
-// import DataBase from '../database/connection.js';
+import DataBase from '../database/Connection.js';
 import UserRoutes from '../routes/UserRoutes.js';
+import Associations from './Associations.js';
 
 class Server {
     
@@ -10,8 +11,8 @@ class Server {
         this.app = express();
         this.port = process.env.PORT || Config.PORT;
         this.userRoutes = new UserRoutes();
-
-        // this.DataBaseConnection();
+        this.DataBaseConnection();
+        Associations.associate();
         this.middlewares();
         this.routes();
 
@@ -58,15 +59,15 @@ class Server {
      * This method will connect to the database using
      * the credentials that are set in the config file.
      **************************************************/
-    // async DataBaseConnection() {
-    //    try {
-    //     await DataBase.authenticate();
-    //     // DataBase.sync({ force: true });
-    //     console.log('Connection has been established successfully.');
-    //    } catch (error) {
-    //     console.error('Unable to connect to the database:', error);
-    //    }
-    // }
+    async DataBaseConnection() {
+       try {
+        await DataBase.authenticate();
+        // DataBase.sync({ force: true });
+        console.log('Connection has been established successfully.');
+       } catch (error) {
+        console.error('Unable to connect to the database:', error);
+       }
+    }
 }
 
 export default Server;
