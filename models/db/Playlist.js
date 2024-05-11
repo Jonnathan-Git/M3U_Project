@@ -1,7 +1,5 @@
 import DataBase from "../../database/Connection.js";
-import Channel from "./Channel.js";
 import { DataTypes } from "sequelize";
-import User from "./User.js";
 
 const PlayList = DataBase.define("PlayList", {
     id: {
@@ -12,7 +10,12 @@ const PlayList = DataBase.define("PlayList", {
     name: {
         type: DataTypes.STRING(128),
         allowNull: false,
-    }
+    },
+    amount: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
 }, {
     tableName: 'playlists',
     timestamps: false

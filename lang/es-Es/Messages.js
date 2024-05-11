@@ -66,6 +66,9 @@ const Error = {
             expiredCode: 'Código expirado'
 
         }
+    },
+    playlist:{
+        invalid: 'Lista de reproducción inválida'
     }
 };
 

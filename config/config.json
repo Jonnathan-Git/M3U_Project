@@ -12,7 +12,8 @@
             "pass": "dqkq ixtq vpmb bmaw"
         },
         "path": {
-            "user": "/api/user"
+            "user": "/api/user",
+            "playlist": "/api/playlist"
         },
         "autorization": {
             "secret_key": "hgdtei7564jcnbjsd974?6gasodsfhi12##@456"

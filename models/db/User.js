@@ -1,6 +1,4 @@
 import DataBase from "../../database/Connection.js";
-import Channel from "./Channel.js";
-import PlayList from "./Channel.js";
 import { DataTypes } from "sequelize";
 
 const User = DataBase.define("Users", {
