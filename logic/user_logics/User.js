@@ -4,6 +4,7 @@ import { ResponseMessage } from '../general/ResponseMessage.js';
 import { Error, Success } from '../../lang/es-Es/Messages.js';
 import bcrypt from 'bcrypt';
 import validatePassword from './ValidatePass.js';
+import updateFields from '../general/UpdateFields.js';
 
 class UserLogic {
 
@@ -75,7 +76,7 @@ class UserLogic {
                 return ResponseMessage(res, 404, Error.notFound);
             }
 
-            const updatedFields = this.updateFields(body,user);
+            const updatedFields = updateFields(body,user);
 
             await User.update(updatedFields, { where: { id: body.id } });
             ResponseMessage(res, 200, Success.update, body);
@@ -96,12 +97,12 @@ class UserLogic {
         try {
             const user = await User.findByPk(id);
             if (!user) {
-                return ResponseMessage(res, 404, Error.user.notFound);
+                return ResponseMessage(res, 404, Error.notFound);
             }
             await User.destroy({ where: { id } });
             ResponseMessage(res, 200, Success.delete);
         } catch (error) {
-            ResponseMessage(res, 500, Error.delete);
+            ResponseMessage(res, 500, error.message);
         }
     }
 
@@ -117,7 +118,7 @@ class UserLogic {
         try {
             const user = await User.findOne({ where: { email: body.email } });
             if (!user) {
-                return ResponseMessage(res, 404, Error.user.notFound);
+                return ResponseMessage(res, 404, Error.notFound);
             }
 
             validatePassword(body.password, user.password, res);
@@ -133,31 +134,6 @@ class UserLogic {
         } catch (error) {
 
         }
-    }
-
-    /***********************************************************
-     * Updates the fields of a user object based on the provided body object.
-     * @param {Object} body - The object containing the updated field values.
-     * @param {Object} user - The user object to be updated.
-     * @returns {Object} - An object containing the updated fields.
-     **********************************************************/
-    updateFields(body,user) {
-        // create a object to store the updated fields
-        const updatedFields = {};
-        
-         // get the keys of the body object
-         const keys = Object.keys(body);
- 
-         // iterate over the keys
-         keys.forEach(key => {
-             if (user[key] !== body[key]) {
-                 // if the fiels is different from the user object (object in the database)
-                 // then add the field to the updatedFields object
-                 updatedFields[key] = body[key];
-             }
-         });
-         
-         return updatedFields;
     }
 }
 

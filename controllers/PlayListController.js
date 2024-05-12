@@ -17,6 +17,18 @@ class PlayListController {
     createPlaylist = async (req, res) => {
         await this.playListLogic.createPlayList(req, res);
     }
+
+    updatePlaylist = async (req, res) => {
+        await this.playListLogic.updatePlayList(req, res);
+    }
+
+    deletePlaylist = async (req, res) => {
+        await this.playListLogic.deletePlayList(req, res);
+    }
+
+    getPlaylistFile = async (req, res) => {
+        await this.playListLogic.getPlaylistFile(req, res);
+    }
   
 }
 
