@@ -1,4 +1,4 @@
-import PlayList from "../../models/db/PlayList.js";
+import PlayList from "../../models/db/Playlist.js";
 import { Success, Error } from "../../lang/es-Es/Messages.js";
 import { ResponseMessage } from "../general/ResponseMessage.js";
 import Channel from "../../models/db/Channel.js";
