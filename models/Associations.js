@@ -1,6 +1,6 @@
 import User from './db/User.js';
 import Channel from './db/Channel.js';
-import PlayList from './db/PlayList.js';
+import PlayList from './db/Playlist.js';
 import ChannelPlayList from './db/Channel_Playlist.js';
 
 
