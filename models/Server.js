@@ -4,6 +4,7 @@ import Config from '../config/Config.js';
 import DataBase from '../database/Connection.js';
 import UserRoutes from '../routes/UserRoutes.js';
 import PlaylistRoutes from '../routes/PlayListRoutes.js';
+import ChannelRoutes from '../routes/ChannelRoutes.js';
 import Associations from './Associations.js';
 
 class Server {
@@ -13,6 +14,7 @@ class Server {
         this.port = process.env.PORT || Config.PORT;
         this.userRoutes = new UserRoutes();
         this.PlaylistRoutes = new PlaylistRoutes();
+        this.ChannelRoutes = new ChannelRoutes();
         this.DataBaseConnection();
         Associations.associate();
         this.middlewares();
@@ -56,6 +58,7 @@ class Server {
     routes() {
         this.app.use(Config.path.user, this.userRoutes.getRoutes());
         this.app.use(Config.path.playlist, this.PlaylistRoutes.getRoutes());
+        this.app.use(Config.path.channel, this.ChannelRoutes.getRoutes());
     }
 
     /**************************************************

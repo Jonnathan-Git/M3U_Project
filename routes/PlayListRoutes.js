@@ -20,7 +20,7 @@ class PlaylistRoutes {
         this.router_playlist.get('/all/:userId',Auth.AuthenticateToken,this.controller.getAllPlayListById);
         this.router_playlist.put('/',Auth.AuthenticateToken,this.controller.updatePlaylist);
         this.router_playlist.delete('/:id',Auth.AuthenticateToken,this.controller.deletePlaylist);
-        this.router_playlist.get('/file/:id',Auth.AuthenticateToken,this.controller.getPlaylistFile);
+        this.router_playlist.get('/file/:id',this.controller.getPlaylistFile);
     }
 
     /***********************************************************

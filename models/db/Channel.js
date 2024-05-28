@@ -32,6 +32,10 @@ const Channel = DataBase.define("Channels", {
     meta_data: {
         type: DataTypes.STRING(512),
         allowNull: true
+    },
+    url: {
+        type: DataTypes.STRING(255),
+        allowNull: true
     }
 },{
     tableName: 'channels',

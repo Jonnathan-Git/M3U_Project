@@ -1,6 +1,9 @@
 import DataBase from "../../database/Connection.js";
 import { DataTypes } from "sequelize";
-
+//Agregar el campo public
+//este campo es para saber si el usuario es publico o no
+//si es publico permitira que otros usuarios puedan ver sus canales 
+//si es privado solo el usuario podra ver sus canales
 const User = DataBase.define("Users", {
     id: {
         type: DataTypes.UUID,

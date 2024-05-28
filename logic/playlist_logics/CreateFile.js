@@ -22,8 +22,9 @@ export default function CreateFile(res, fileName, extension, data) {
  * @returns {string} The formatted entry.
  **********************************************************************/
 function formatEntry(key, value) {
-    if (key === 'header') {return '#EXTINF: -1 ';}
+    if (key === 'header') {return value;}
     if (key === 'meta_data') {return `, ${value}`;}
+    if (key === 'url') {return `\n${value}`;}
 
     return `${key.replace(/_/g, '-')}="${value}"`;
 }
