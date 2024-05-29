@@ -6,8 +6,8 @@ class PlayListController {
         this.playListLogic = new PlayListLogic();
     }
     
-    getAllPlayListById = async (req, res) => {
-        await this.playListLogic.getAllPlayListById(req, res);
+    getAllPlayListByUserId = async (req, res) => {
+        await this.playListLogic.getAllPlayListByUserId(req, res);
     }
 
     getPlaylistById = async (req, res) => {

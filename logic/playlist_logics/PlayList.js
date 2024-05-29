@@ -10,15 +10,11 @@ class PlayListLogic {
     constructor() {
     }
 
-    async getAllPlayListById(req, res) {
+    async getAllPlayListByUserId(req, res) {
         const { userId } = req.params;
         try {
             const playlist = await PlayList.findAll({
-                where: { userId },
-                include: {
-                    model: Channel
-                },
-                
+                where: { userId }
             });
 
             if (!playlist) { return ResponseMessage(res, 404, Error.notFound); }

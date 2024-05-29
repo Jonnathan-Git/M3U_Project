@@ -10,7 +10,9 @@ class ChannelRoutes {
     }
 
     init() {
-        this.router_channel.post('/', this.controller.createChannel);
+        this.router_channel.post('/', Auth.AuthenticateToken, this.controller.createChannel);
+        this.router_channel.put('/', Auth.AuthenticateToken,this.controller.updateChannel);
+        this.router_channel.get('/:id', this.controller.getChannelById);
     }
 
     /***********************************************************

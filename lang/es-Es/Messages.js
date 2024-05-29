@@ -69,6 +69,10 @@ const Error = {
     },
     playlist:{
         invalid: 'Lista de reproducción inválida'
+    },
+    channel:{
+        invalid: 'Canal inválido',
+        channelExists: 'El canal ya existe'
     }
 };
 
