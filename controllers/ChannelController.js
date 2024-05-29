@@ -6,7 +6,7 @@ class ChannelController {
         this.channel_logic = new ChannelLogic();
     }
 
-     createChannel = async (req, res) => {
+    createChannel = async (req, res) => {
         await this.channel_logic.createChannel(req, res);
     }
 
@@ -16,6 +16,10 @@ class ChannelController {
 
     getChannelById = async (req, res) => {
         await this.channel_logic.getChannelById(req, res);
+    }
+
+    deleteChannel = async (req, res) => {
+        await this.channel_logic.deleteChannel(req, res);
     }
 }
 

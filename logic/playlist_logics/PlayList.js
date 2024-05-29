@@ -33,11 +33,11 @@ class PlayListLogic {
                 where: { id },
                 include: {
                     model: Channel,
-                    attributes: {exclude: ['UserId']},
+                    attributes: { exclude: ['UserId'] },
                     through: { attributes: [] }
-                } 
+                }
             });
-        
+
             if (!playlist) { return ResponseMessage(res, 404, Error.notFound); }
 
             ResponseMessage(res, 200, Success.get, playlist);
@@ -79,12 +79,8 @@ class PlayListLogic {
     async deletePlayList(req, res) {
         const { id } = req.params;
         try {
-            const playlist = await PlayList.findByPk(id);
-
-            if (!playlist) { return ResponseMessage(res, 404, Error.notFound); }
-
-            PlayList.destroy({ where: { id } });
-
+            const playlistDeleteds = await PlayList.destroy({ where: { id: id } });
+            if (playlistDeleteds === 0) return ResponseMessage(res, 404, Error.notFound);
             ResponseMessage(res, 200, Success.delete);
 
         } catch {
@@ -92,7 +88,7 @@ class PlayListLogic {
         }
     }
 
-   async getPlaylistFile(req, res) {
+    async getPlaylistFile(req, res) {
 
         const { id } = req.params;
 
@@ -101,9 +97,9 @@ class PlayListLogic {
                 where: { id },
                 include: {
                     model: Channel,
-                    attributes: {exclude: ['UserId','id']},
+                    attributes: { exclude: ['UserId', 'id'] },
                     through: { attributes: [] }
-                } 
+                }
             });
 
             if (!playlist) { return ResponseMessage(res, 404, Error.notFound); }

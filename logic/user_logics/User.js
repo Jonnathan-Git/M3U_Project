@@ -76,7 +76,7 @@ class UserLogic {
                 return ResponseMessage(res, 404, Error.notFound);
             }
 
-            const updatedFields = updateFields(body,user);
+            const updatedFields = updateFields(body, user);
 
             await User.update(updatedFields, { where: { id: body.id } });
             ResponseMessage(res, 200, Success.update, body);
@@ -95,11 +95,8 @@ class UserLogic {
     async deleteUser(req, res) {
         const { id } = req.params;
         try {
-            const user = await User.findByPk(id);
-            if (!user) {
-                return ResponseMessage(res, 404, Error.notFound);
-            }
-            await User.destroy({ where: { id } });
+            const userDeleteds = await User.destroy({ where: { id: id } });
+            if (userDeleteds === 0) return ResponseMessage(res, 404, Error.notFound);
             ResponseMessage(res, 200, Success.delete);
         } catch (error) {
             ResponseMessage(res, 500, error.message);

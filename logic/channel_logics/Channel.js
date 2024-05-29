@@ -32,7 +32,7 @@ class ChannelLogic {
     }
 
     async updateChannel(req, res) {
-        const {body} = req;
+        const { body } = req;
 
         try {
             const channel = await Channel.findByPk(body.id);
@@ -46,14 +46,25 @@ class ChannelLogic {
         }
     }
 
-    async getChannelById(req,res){
-        const {id} = req.params;
+    async getChannelById(req, res) {
+        const { id } = req.params;
         try {
             const channel = await Channel.findByPk(id);
             if (!channel) return ResponseMessage(res, 404, Error.notFound);
             ResponseMessage(res, 200, Success.get, channel);
         } catch {
             ResponseMessage(res, 400, Error.get);
+        }
+    }
+
+    async deleteChannel(req, res) {
+        const { id } = req.params;
+        try {
+            const channelDeleteds = await Channel.destroy({ where: { id: id } });
+            if (channelDeleteds === 0) return ResponseMessage(res, 404, Error.channel.notExists);
+            ResponseMessage(res, 200, Success.delete);
+        } catch (error) {
+            ResponseMessage(res, 400, Error.delete);
         }
     }
 

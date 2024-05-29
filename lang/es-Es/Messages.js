@@ -72,7 +72,8 @@ const Error = {
     },
     channel:{
         invalid: 'Canal inválido',
-        channelExists: 'El canal ya existe'
+        channelExists: 'El canal ya existe',
+        notExists: 'El canal no existe'
     }
 };
 

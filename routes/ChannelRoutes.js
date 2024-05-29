@@ -13,6 +13,7 @@ class ChannelRoutes {
         this.router_channel.post('/', Auth.AuthenticateToken, this.controller.createChannel);
         this.router_channel.put('/', Auth.AuthenticateToken,this.controller.updateChannel);
         this.router_channel.get('/:id', this.controller.getChannelById);
+        this.router_channel.delete('/:id',  this.controller.deleteChannel);
     }
 
     /***********************************************************
