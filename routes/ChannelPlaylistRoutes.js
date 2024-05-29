@@ -17,8 +17,8 @@ class ChannelPlaylistRoutes {
      * Initializes the routes for adding and deleting channels from playlists.
      *****************************************************************/
     init() {
-        this.channelP.post('/add/channel', this.controller.addChannelToPlaylist);
-        this.channelP.delete('/delete/channel', this.controller.deleteChannelFromPlaylist);
+        this.channelP.post('/add/channel', Auth.AuthenticateToken, this.controller.addChannelToPlaylist);
+        this.channelP.delete('/delete/channel', Auth.AuthenticateToken, this.controller.deleteChannelFromPlaylist);
     }
 
     /******************************************************************

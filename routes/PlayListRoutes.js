@@ -15,12 +15,12 @@ class PlaylistRoutes {
      **********************************************************/
     init() {
         // Route to get a playlist form a user
-        this.router_playlist.get('/:id',Auth.AuthenticateToken,this.controller.getPlaylistById);
-        this.router_playlist.post('/',Auth.AuthenticateToken,this.controller.createPlaylist);
-        this.router_playlist.get('/all/:userId',Auth.AuthenticateToken,this.controller.getAllPlayListByUserId);
-        this.router_playlist.put('/',Auth.AuthenticateToken,this.controller.updatePlaylist);
-        this.router_playlist.delete('/:id',Auth.AuthenticateToken,this.controller.deletePlaylist);
-        this.router_playlist.get('/file/:id',this.controller.getPlaylistFile);
+        this.router_playlist.get('/:id', Auth.AuthenticateToken, this.controller.getPlaylistById);
+        this.router_playlist.post('/', Auth.AuthenticateToken, this.controller.createPlaylist);
+        this.router_playlist.get('/all/:userId', Auth.AuthenticateToken, this.controller.getAllPlayListByUserId);
+        this.router_playlist.put('/', Auth.AuthenticateToken, this.controller.updatePlaylist);
+        this.router_playlist.delete('/:id', Auth.AuthenticateToken, this.controller.deletePlaylist);
+        this.router_playlist.get('/file/:id', Auth.AuthenticateToken, this.controller.getPlaylistFile);
     }
 
     /***********************************************************
