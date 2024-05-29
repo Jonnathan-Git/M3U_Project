@@ -8,10 +8,6 @@ const Channel = DataBase.define("Channels", {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4
     },
-    header: {
-        type: DataTypes.STRING(32),
-        allowNull: false,
-    },
     tvg_id: {
         type: DataTypes.STRING(128),
         allowNull: true

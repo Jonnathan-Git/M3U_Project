@@ -22,9 +22,8 @@ export default function CreateFile(res, fileName, extension, data) {
  * @returns {string} The formatted entry.
  **********************************************************************/
 function formatEntry(key, value) {
-    if (key === 'header') {return value;}
-    if (key === 'meta_data') {return `, ${value}`;}
-    if (key === 'url') {return `\n${value}`;}
+    if (key === 'meta_data') { return `, ${value}`; }
+    if (key === 'url') { return `\n${value}`; }
 
     return `${key.replace(/_/g, '-')}="${value}"`;
 }
@@ -40,8 +39,8 @@ function CreateDatatoFile(channels) {
             .filter(([value]) => value !== null)
             .map(([key, value]) => formatEntry(key, value));
 
-        return entries.join(' ') + '\n';
+        return "#EXTINF: -1 " + entries.join(' ') + '\n';
     }).join('');
-    
+
     return result;
 }

@@ -18,7 +18,6 @@ export async function importChannels(fileData, ModelChannel,userId) {
         const channel = await processLine(line);
         if (!await verifyActiveUrlChannels(channel.url)) return trashChannels.push(channel);
         if (!await verifyUrlChannels(channel.url, ModelChannel)) return repeatChannels.push(channel);
-        channel.header = "#EXTINF: -1";
         channel.UserId = userId;
         channels.push(channel);
     }));
