@@ -10,6 +10,13 @@ class PlayListLogic {
     constructor() {
     }
 
+    /******************************************************************
+     * Retrieves all playlists by user ID.
+     *
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @returns {Promise<void>} - A promise that resolves when the operation is complete.
+     *****************************************************************/
     async getAllPlayListByUserId(req, res) {
         const { userId } = req.params;
         try {
@@ -25,6 +32,13 @@ class PlayListLogic {
         }
     }
 
+    /******************************************************************
+     * Retrieves a playlist by its ID.
+     *
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @returns {Promise<void>} - A promise that resolves when the playlist is retrieved.
+     *****************************************************************/
     async getPlayListById(req, res) {
         const { id } = req.params;
 
@@ -47,6 +61,13 @@ class PlayListLogic {
         }
     }
 
+    /******************************************************************
+     * Creates a new playlist.
+     *
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @returns {Promise<void>} - A promise that resolves when the playlist is created.
+     *****************************************************************/
     async createPlayList(req, res) {
         const { UserId, name } = req.body;
         try {
@@ -58,6 +79,13 @@ class PlayListLogic {
         }
     }
 
+    /******************************************************************
+     * Updates a playlist.
+     *
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @returns {Promise<void>} - A promise that resolves when the playlist is updated.
+     *****************************************************************/
     async updatePlayList(req, res) {
         const { body } = req;
         try {
@@ -76,6 +104,13 @@ class PlayListLogic {
         }
     }
 
+    /******************************************************************
+     * Deletes a playlist by its ID.
+     *
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @returns {Promise<void>} - A promise that resolves when the playlist is deleted.
+     *****************************************************************/
     async deletePlayList(req, res) {
         const { id } = req.params;
         try {
@@ -88,6 +123,13 @@ class PlayListLogic {
         }
     }
 
+    /******************************************************************
+     * Retrieves the playlist file with the specified ID and sends it as a response.
+     *
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @returns {Promise<void>} - A promise that resolves when the playlist file is sent as a response.
+     *****************************************************************/
     async getPlaylistFile(req, res) {
 
         const { id } = req.params;

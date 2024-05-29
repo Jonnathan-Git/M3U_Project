@@ -20,6 +20,9 @@ const Success = {
         codeSent: 'Se ha enviado un código al correo asociado a su cuenta. Por favor, verifique su bandeja de entrada o spam',
         codeValid: 'Código válido',
         passwordChanged: 'Contraseña cambiada con éxito'
+    },
+    import:{
+        creteAll:"Canales creados exitosamente"
     }
 };
 
@@ -73,7 +76,10 @@ const Error = {
     channel:{
         invalid: 'Canal inválido',
         channelExists: 'El canal ya existe',
-        notExists: 'El canal no existe'
+        notExists: 'El canal no existe',
+        import: 'Error al importar los canales',
+        notFile: 'No se ha seleccionado ningún archivo',
+        emptyFile: 'El archivo está vacío',
     }
 };
 

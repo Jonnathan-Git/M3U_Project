@@ -15,8 +15,11 @@ const Channel = DataBase.define("Channels", {
     tvg_id: {
         type: DataTypes.STRING(128),
         allowNull: true
-    }
-    ,
+    },
+    tvg_name: {
+        type: DataTypes.STRING(255),
+        allowNull: true
+    },
     tvg_chno: {
         type: DataTypes.STRING(32),
         allowNull: true
