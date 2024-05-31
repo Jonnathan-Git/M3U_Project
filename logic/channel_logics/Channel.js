@@ -72,6 +72,24 @@ class ChannelLogic {
         }
     }
 
+    /*******************************************************************
+     * Retrieves channels by user ID.
+     *
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @returns {Promise<void>} - A promise that resolves when the channels are retrieved.
+     ******************************************************************/
+    async getChannelsByUserId(req, res) {
+        const { userId } = req.params;
+        try {
+            const channels = await Channel.findAll({ where: { userId: userId } });
+            if (!channels) return ResponseMessage(res, 404, Error.notFound);
+            ResponseMessage(res, 200, Success.get, channels);
+        } catch {
+            ResponseMessage(res, 400, Error.get);
+        }
+    }
+
     /******************************************************************
      * Deletes a channel by its ID.
      *

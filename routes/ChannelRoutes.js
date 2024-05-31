@@ -15,6 +15,7 @@ class ChannelRoutes {
         this.router_channel.post('/', Auth.AuthenticateToken, this.controller.createChannel);
         this.router_channel.put('/', Auth.AuthenticateToken, this.controller.updateChannel);
         this.router_channel.get('/:id', Auth.AuthenticateToken, this.controller.getChannelById);
+        this.router_channel.get('/user/:userId', Auth.AuthenticateToken, this.controller.getChannelsByUserId);
         this.router_channel.delete('/:id', Auth.AuthenticateToken, this.controller.deleteChannel);
         this.router_channel.post('/import', Auth.AuthenticateToken, this.upload.single('file'), this.controller.import);
     }
