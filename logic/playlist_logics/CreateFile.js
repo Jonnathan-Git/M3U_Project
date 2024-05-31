@@ -22,10 +22,10 @@ export default function CreateFile(res, fileName, extension, data) {
  * @returns {string} The formatted entry.
  **********************************************************************/
 function formatEntry(key, value) {
-    if (key === 'meta_data') { return `, ${value}`; }
+    if (key === 'meta_data') { return `,${value}`; }
     if (key === 'url') { return `\n${value}`; }
 
-    return `${key.replace(/_/g, '-')}="${value}"`;
+    return ` ${key.replace(/_/g, '-')}="${value}"`;
 }
 
 /***************************************************************
@@ -33,14 +33,14 @@ function formatEntry(key, value) {
  * @param {Object} data - The data object containing the channels.
  ***************************************************************/
 function CreateDatatoFile(channels) {
-    const result = '#EXTM3U\n' + channels.flatMap(channel => {
+    const result = channels.flatMap(channel => {
 
         const entries = Object.entries(channel.dataValues)
-            .filter(([value]) => value !== null)
+            .filter(([,value]) => value !== null)
             .map(([key, value]) => formatEntry(key, value));
 
-        return "#EXTINF: -1 " + entries.join(' ') + '\n';
+        return `#EXTINF: -1${entries.join('')}\n`;
     }).join('');
 
-    return result;
+    return `#EXTM3U\n${result}`;
 }

@@ -11,7 +11,7 @@ export async function importChannels(fileData, ModelChannel,userId) {
     const channels = [];
     const trashChannels = [];
     const repeatChannels = [];
-    fileData = fileData.replace("#EXTM3U ", '');
+    fileData = fileData.replace("#EXTM3U", '');
     const lines = fileData.split('#EXTINF: -1').slice(1);
 
     await Promise.all(lines.map(async line => {
