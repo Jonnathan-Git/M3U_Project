@@ -1,3 +1,4 @@
+import { STARTREGEX, VALIDTAGS } from "./ImportConstants.js";
 import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerifyChannels.js";
 
 /******************************************************************
@@ -7,28 +8,25 @@ import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerifyChannels.js"
  * @param {string} userId - The ID of the user.
  * @returns {Promise<{channels: Array, trashChannels: Array, repeatChannels: Array}>} - An object containing the imported channels, trash channels, and repeat channels.
  *****************************************************************/
-export async function importChannels(fileData, ModelChannel, userId) {
+export async function importChannels(fileData, ModelChannel, playlistId) {
+
     const channels = [];
     const trashChannels = [];
     const repeatChannels = [];
-    //modificar esta parte
-    //posible solucion, recorrer el archivo
+
     fileData = fileData.replace("#EXTM3U", '');
-    fileData = fileData.replace(/:-1 |: -1 |&/g, '');
-    fileData = deleteNullLines(fileData);
-    const lines = fileData.split('#EXTINF').slice(1);
+    const lines = fileData.split('#').slice(1);
 
     await Promise.all(lines.map(async line => {
         const channel = await processLine(line);
         if (!await verifyActiveUrlChannels(channel.url)) return trashChannels.push(channel);
         if (!await verifyUrlChannels(channel.url, ModelChannel)) return repeatChannels.push(channel);
-        channel.UserId = userId;
+        channel.PlayListId = playlistId;
         channels.push(channel);
     }));
 
     return { channels, trashChannels, repeatChannels };
 }
-
 
 /******************************************************************
  * Processes a line of input and returns a channel object.
@@ -39,6 +37,8 @@ export async function importChannels(fileData, ModelChannel, userId) {
 async function processLine(line) {
     const [tagPart, metaPart] = line.split(',');
     const channel = {};
+    console.log(tagPart);
+    if (!STARTREGEX.test(tagPart)) return channel;
     processTags(tagPart, channel);
     processMetadata(metaPart, channel);
     return channel;
@@ -52,12 +52,13 @@ async function processLine(line) {
  * @returns {object} The updated channel object.
  *****************************************************************/
 function processTags(tagPart, channel) {
-    tagPart = deleteSpaces(tagPart);
-    const tags = tagPart.split('&');
+    const tags = createAllValidTags(tagPart);
     tags.forEach(tag => {
+        console.log(tag);
         const [key, value] = tag.split('=');
         channel[key.replace("-", "_")] = value.replace(/"/g, '');
     });
+
     return channel;
 }
 
@@ -69,27 +70,30 @@ function processTags(tagPart, channel) {
  * @returns {object} - The updated channel object.
  *****************************************************************/
 function processMetadata(metaPart, channel) {
-    const [metadata, url] = metaPart ? metaPart.split('\n') : null;
-    channel.meta_data = metadata || null;
-    channel.url = url || null;
+    if (metaPart) {
+        const [metadata, url] = metaPart.split('\n');
+        channel.meta_data = metadata || null;
+        channel.url = url || null;
+    } else {
+        channel.meta_data = null;
+        channel.url = null;
+    }
+
     return channel;
 }
 
-function deleteNullLines(text) {
-    return text
-        .split('\n')          
-        .filter(linea => linea.trim() !== '') 
-        .join('\n');          
-}
-
-function deleteSpaces(texto) {
-    return texto.replace(/("[^"]*")|(\s+)/g, (match, group1, group2) => {
-        if (group1) {
-            return group1;
-        } else if (group2) {
-            return '&';
-        }
-        return match;
+/******************************************************************
+ * Creates an array of valid tags found in the tag part.
+ * 
+ * @param {string} tagPart - The tag part to search for valid tags.
+ * @returns {Array<string>} An array of valid tags with their values.
+ *****************************************************************/
+function createAllValidTags(tagPart) {
+    let result = [];
+    VALIDTAGS.forEach(tag => {
+        const tagResult = new RegExp(`${tag}="([^"]*)"`);
+        const match = tagPart.match(tagResult);
+        if (match) result.push(`${tag}="${match[1]}"`);
     });
+    return result;
 }
-
