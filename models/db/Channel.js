@@ -21,7 +21,7 @@ const Channel = DataBase.define("Channels", {
         allowNull: true
     },
     tvg_logo: {
-        type: DataTypes.STRING(128),
+        type: DataTypes.STRING(1024),
         allowNull: true
     },
     group_title: {

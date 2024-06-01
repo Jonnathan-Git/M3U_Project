@@ -80,6 +80,7 @@ const Error = {
         import: 'Error al importar los canales',
         notFile: 'No se ha seleccionado ningún archivo',
         emptyFile: 'El archivo está vacío',
+        notChannelsImported: 'No se importaron canales',
     }
 };
 

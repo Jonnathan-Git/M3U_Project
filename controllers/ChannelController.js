@@ -36,17 +36,6 @@ class ChannelController {
         await this.channel_logic.getChannelById(req, res);
     }
 
-    /*******************************************************************
-     * Retrieves a channel by its ID.
-     *
-     * @param {Object} req - The request object.
-     * @param {Object} res - The response object.
-     * @returns {Promise<void>} - A promise that resolves when the channel is retrieved.
-     ******************************************************************/
-    getChannelsByUserId = async (req, res) => {
-        await this.channel_logic.getChannelsByUserId(req, res);
-    }
-
     /******************************************************************
      * Deletes a channel.
      * @param {Object} req - The request object.

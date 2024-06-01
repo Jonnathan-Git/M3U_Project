@@ -47,8 +47,7 @@ class PlayListLogic {
                 where: { id },
                 include: {
                     model: Channel,
-                    attributes: { exclude: ['UserId'] },
-                    through: { attributes: [] }
+                    attributes: { exclude: ['PlayListId'] }
                 }
             });
 
@@ -140,7 +139,6 @@ class PlayListLogic {
                 include: {
                     model: Channel,
                     attributes: { exclude: ['UserId', 'id'] },
-                    through: { attributes: [] }
                 }
             });
 

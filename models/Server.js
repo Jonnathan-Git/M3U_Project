@@ -5,7 +5,6 @@ import DataBase from '../database/Connection.js';
 import UserRoutes from '../routes/UserRoutes.js';
 import ChannelRoutes from '../routes/ChannelRoutes.js';
 import PlaylistRoutes from '../routes/PlayListRoutes.js';
-import ChannelPlaylistRoutes from '../routes/ChannelPlaylistRoutes.js';
 import Associations from './Associations.js';
 
 class Server {
@@ -16,7 +15,6 @@ class Server {
         this.userRoutes = new UserRoutes();
         this.PlaylistRoutes = new PlaylistRoutes();
         this.ChannelRoutes = new ChannelRoutes();
-        this.ChannelPlaylistRoutes = new ChannelPlaylistRoutes();
         this.DataBaseConnection();
         Associations.associate();
         this.middlewares();
@@ -61,7 +59,6 @@ class Server {
         this.app.use(Config.path.user, this.userRoutes.getRoutes());
         this.app.use(Config.path.playlist, this.PlaylistRoutes.getRoutes());
         this.app.use(Config.path.channel, this.ChannelRoutes.getRoutes());
-        this.app.use(Config.path.playlist, this.ChannelPlaylistRoutes.getRoutes());
     }
 
     /**************************************************
@@ -71,7 +68,7 @@ class Server {
     async DataBaseConnection() {
        try {
         await DataBase.authenticate();
-        // DataBase.sync({ force: true });
+        DataBase.sync({ force: true });
         console.log('Connection has been established successfully.');
        } catch (error) {
         console.error('Unable to connect to the database:', error);

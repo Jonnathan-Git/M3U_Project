@@ -118,19 +118,21 @@ class ChannelLogic {
      *****************************************************************/
     async import(req, res) {
         const { file } = req;
-        const { userId } = req.body;
+        const { playListId } = req.body;
 
         try {
             if (!file) return ResponseMessage(res, 400, Error.channel.notFile);
             const data = file.buffer.toString('utf8');
             if (!data) return ResponseMessage(res, 400, Error.channel.emptyFile);
 
-            const importInfo = await importChannels(data, Channel,userId);
+            const importInfo = await importChannels(data, Channel ,playListId);
+
+            if (importInfo.channels.length === 0) return ResponseMessage(res, 400, Error.channel.notChannelsImported);
 
             Channel.bulkCreate(importInfo.channels);
 
             ResponseMessage(res, 200, Success.import.creteAll, { trash: importInfo.trashChannels, repeat: importInfo.repeatChannels });
-        } catch {
+        } catch (error) {
             ResponseMessage(res, 400, Error.channel.import);
         }
     }
