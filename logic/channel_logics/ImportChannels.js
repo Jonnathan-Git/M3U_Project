@@ -7,12 +7,16 @@ import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerifyChannels.js"
  * @param {string} userId - The ID of the user.
  * @returns {Promise<{channels: Array, trashChannels: Array, repeatChannels: Array}>} - An object containing the imported channels, trash channels, and repeat channels.
  *****************************************************************/
-export async function importChannels(fileData, ModelChannel,userId) {
+export async function importChannels(fileData, ModelChannel, userId) {
     const channels = [];
     const trashChannels = [];
     const repeatChannels = [];
+    //modificar esta parte
+    //posible solucion, recorrer el archivo
     fileData = fileData.replace("#EXTM3U", '');
-    const lines = fileData.split('#EXTINF: -1').slice(1);
+    fileData = fileData.replace(/:-1 |: -1 |&/g, '');
+    fileData = deleteNullLines(fileData);
+    const lines = fileData.split('#EXTINF').slice(1);
 
     await Promise.all(lines.map(async line => {
         const channel = await processLine(line);
@@ -48,8 +52,8 @@ async function processLine(line) {
  * @returns {object} The updated channel object.
  *****************************************************************/
 function processTags(tagPart, channel) {
-    const tags = tagPart.split(' ');
-    tags.shift();
+    tagPart = deleteSpaces(tagPart);
+    const tags = tagPart.split('&');
     tags.forEach(tag => {
         const [key, value] = tag.split('=');
         channel[key.replace("-", "_")] = value.replace(/"/g, '');
@@ -68,6 +72,24 @@ function processMetadata(metaPart, channel) {
     const [metadata, url] = metaPart ? metaPart.split('\n') : null;
     channel.meta_data = metadata || null;
     channel.url = url || null;
-
     return channel;
 }
+
+function deleteNullLines(text) {
+    return text
+        .split('\n')          
+        .filter(linea => linea.trim() !== '') 
+        .join('\n');          
+}
+
+function deleteSpaces(texto) {
+    return texto.replace(/("[^"]*")|(\s+)/g, (match, group1, group2) => {
+        if (group1) {
+            return group1;
+        } else if (group2) {
+            return '&';
+        }
+        return match;
+    });
+}
+
