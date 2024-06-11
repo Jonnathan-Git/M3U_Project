@@ -5,6 +5,7 @@ import DataBase from '../database/Connection.js';
 import UserRoutes from '../routes/UserRoutes.js';
 import ChannelRoutes from '../routes/ChannelRoutes.js';
 import PlaylistRoutes from '../routes/PlayListRoutes.js';
+import GroupRoutes from '../routes/GroupRoutes.js';
 import Associations from './Associations.js';
 
 class Server {
@@ -15,6 +16,7 @@ class Server {
         this.userRoutes = new UserRoutes();
         this.PlaylistRoutes = new PlaylistRoutes();
         this.ChannelRoutes = new ChannelRoutes();
+        this.groupRoutes = new GroupRoutes();
         this.DataBaseConnection();
         Associations.associate();
         this.middlewares();
@@ -59,6 +61,7 @@ class Server {
         this.app.use(Config.path.user, this.userRoutes.getRoutes());
         this.app.use(Config.path.playlist, this.PlaylistRoutes.getRoutes());
         this.app.use(Config.path.channel, this.ChannelRoutes.getRoutes());
+        this.app.use(Config.path.group, this.groupRoutes.getRoutes());
     }
 
     /**************************************************

@@ -4,6 +4,7 @@ import { ResponseMessage } from "../general/ResponseMessage.js";
 import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerifyChannels.js";
 import updateFields from "../general/UpdateFields.js";
 import { importChannels } from "./ImportChannels.js";
+import { getGeneralGroup } from "../group_logics/ChannelsByGroup.js";
 
 
 /*************************************************************************
@@ -124,29 +125,54 @@ class ChannelLogic {
             if (!file) return ResponseMessage(res, 400, Error.channel.notFile);
             const data = file.buffer.toString('utf8');
             if (!data) return ResponseMessage(res, 400, Error.channel.emptyFile);
-
-            const importInfo = await importChannels(data, Channel ,playListId);
+            const groupGeneral = await getGeneralGroup(playListId);
+            console.log(groupGeneral);
+            const importInfo = await importChannels(data, Channel ,playListId, groupGeneral.id);
 
             if (importInfo.channels.length === 0) return ResponseMessage(res, 400, Error.channel.notChannelsImported);
 
-            Channel.bulkCreate(importInfo.channels);
-
-            ResponseMessage(res, 200, Success.import.creteAll, { trash: importInfo.trashChannels, repeat: importInfo.repeatChannels });
+            ResponseMessage(res, 200, Success.get, importInfo.channels);
         } catch (error) {
             ResponseMessage(res, 400, Error.channel.import);
         }
     }
 
+    async createAllChannels(req, res) {
+        const { body } = req;
+        try {
+            if(body.length === 0) return ResponseMessage(res, 400, Error.create);
 
-    //TODO: Implement the getChannels method
-    // async getChannels(req, res) {
-    //     try {
-    //         const channels = await Channel.findAll();
-    //         ResponseMessage(res, 200, Success.get, channels);
-    //     } catch {
-    //         ResponseMessage(res, 400, Error.get);
-    //     }
-    // }
+            const channels = await Channel.bulkCreate(body);
+            ResponseMessage(res, 201, Success.create);
+        } catch {
+            ResponseMessage(res, 400, Error.create);
+        }
+    }
+    //OBTENER CANALES POR GRUPO
+
+    async getChannelsByGroup(req, res) {
+        const { groupId } = req.params;
+        try {
+            const channels = await Channel.findAll({ where: { groupId: groupId } });
+            if (!channels) return ResponseMessage(res, 404, Error.notFound);
+            ResponseMessage(res, 200, Success.get, channels);
+        } catch {
+            ResponseMessage(res, 400, Error.get);
+        }
+    }
+
+    //CAMBIAR GRUPO AL CANAL
+    async changeChannelOfGroup(req, res) {
+        const { body } = req;
+        try {
+            const channel = await Channel.findByPk(body.id);
+            if (!channel) return ResponseMessage(res, 404, Error.notFound);
+            await channel.update(updateFields(body, channel));
+            ResponseMessage(res, 200, Success.update);
+        } catch (error) {
+            ResponseMessage(res, 400, Error.update);
+        }
+    }
 
 }
 export default ChannelLogic;

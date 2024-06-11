@@ -4,6 +4,7 @@ import { ResponseMessage } from "../general/ResponseMessage.js";
 import Channel from "../../models/db/Channel.js";
 import updateFields from "../general/UpdateFields.js";
 import CreateFile from "./CreateFile.js";
+import { getGeneralGroup } from "../group_logics/ChannelsByGroup.js";
 
 class PlayListLogic {
 
@@ -71,6 +72,8 @@ class PlayListLogic {
         const { UserId, name } = req.body;
         try {
             const playlist = await PlayList.create({ UserId, name });
+            //crear grupo por defecto
+            getGeneralGroup(playlist.id);
             ResponseMessage(res, 201, Success.create, playlist);
 
         } catch {

@@ -53,6 +53,17 @@ class ChannelController {
     import = async (req, res) => {
         await this.channel_logic.import(req, res);
     }
+
+    createAllChannels = async (req, res) => {
+        await this.channel_logic.createAllChannels(req, res);
+    }
+    
+    getChannelsByGroup = async (req, res) => {
+        await this.channel_logic.getChannelsByGroup(req, res);
+    }
+    changeChannelGroup = async (req, res) => {
+        await this.channel_logic.changeChannelOfGroup(req, res);
+    }
 }
 
 export default ChannelController;

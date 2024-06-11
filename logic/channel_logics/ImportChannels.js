@@ -8,7 +8,7 @@ import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerifyChannels.js"
  * @param {string} userId - The ID of the user.
  * @returns {Promise<{channels: Array, trashChannels: Array, repeatChannels: Array}>} - An object containing the imported channels, trash channels, and repeat channels.
  *****************************************************************/
-export async function importChannels(fileData, ModelChannel, playlistId) {
+export async function importChannels(fileData, ModelChannel, playlistId,groupId) {
 
     const channels = [];
     const trashChannels = [];
@@ -22,6 +22,7 @@ export async function importChannels(fileData, ModelChannel, playlistId) {
         if (!await verifyActiveUrlChannels(channel.url)) return trashChannels.push(channel);
         if (!await verifyUrlChannels(channel.url, ModelChannel)) return repeatChannels.push(channel);
         channel.PlayListId = playlistId;
+        channel.GroupId = groupId;
         channels.push(channel);
     }));
 
@@ -37,7 +38,6 @@ export async function importChannels(fileData, ModelChannel, playlistId) {
 async function processLine(line) {
     const [tagPart, metaPart] = line.split(',');
     const channel = {};
-    console.log(tagPart);
     if (!STARTREGEX.test(tagPart)) return channel;
     processTags(tagPart, channel);
     processMetadata(metaPart, channel);
@@ -54,7 +54,6 @@ async function processLine(line) {
 function processTags(tagPart, channel) {
     const tags = createAllValidTags(tagPart);
     tags.forEach(tag => {
-        console.log(tag);
         const [key, value] = tag.split('=');
         channel[key.replace("-", "_")] = value.replace(/"/g, '');
     });

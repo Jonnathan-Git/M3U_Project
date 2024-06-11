@@ -81,6 +81,9 @@ const Error = {
         notFile: 'No se ha seleccionado ningún archivo',
         emptyFile: 'El archivo está vacío',
         notChannelsImported: 'No se importaron canales',
+    },
+    group:{
+        groupExists: 'El grupo ya existe'
     }
 };
 
