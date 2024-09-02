@@ -45,10 +45,12 @@ class PlayListLogic {
 
         try {
             const playlist = await PlayList.findOne({
-                where: { id },
+                where: { 
+                    id: id
+                 },
                 include: {
                     model: Channel,
-                    attributes: { exclude: ['PlayListId'] }
+                    through: { attributes: []}
                 }
             });
 

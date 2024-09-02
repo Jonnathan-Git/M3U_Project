@@ -1,10 +1,12 @@
 import Channel from "../../models/db/Channel.js";
+import Playlist from "../../models/db/Playlist.js"
 import { Success, Error } from "../../lang/es-Es/Messages.js";
 import { ResponseMessage } from "../general/ResponseMessage.js";
 import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerifyChannels.js";
 import updateFields from "../general/UpdateFields.js";
 import { importChannels } from "./ImportChannels.js";
 import { getGeneralGroup } from "../group_logics/ChannelsByGroup.js";
+import UserChannel from '../../models/db/UserChannel.js';
 
 
 /*************************************************************************
@@ -19,19 +21,87 @@ class ChannelLogic {
      ************************************************************************/
     async createChannel(req, res) {
 
+        let channel = null;
         const { body } = req;
+
         try {
 
             if (!await verifyActiveUrlChannels(body.url)) return ResponseMessage(res, 400, Error.channel.invalid);
-            if (!await verifyUrlChannels(body.url, Channel)) return ResponseMessage(res, 400, Error.channel.channelExists);
 
-            const channel = await Channel.create(body);
-            ResponseMessage(res, 201, Success.create, channel);
+            const existingChannel = await verifyUrlChannels(body.url, Channel);
+            if (existingChannel) {
+                channel = existingChannel;
+            } else {
+                channel = await Channel.create(body);
+                this.addChannelToPlaylist(body.PlayListId, channel);
+            }
+            this.checkOrAddChannel(res, body.UserId, channel);
 
-        } catch {
-            ResponseMessage(res, 400, Error.create);
+
+        } catch (error){
+            ResponseMessage(res, 400, Error.create, error.message);
         }
     }
+
+    /* checks if the user already has the channel added, if not add the channel for that user */
+    async checkOrAddChannel(res, userId, channel) {
+
+        const existUserChannel = await this.findUserChannel(userId, channel.id);
+        if (existUserChannel) {
+            return ResponseMessage(res, 400, Error.channel.channelExists);
+        } else {
+            await UserChannel.create({ UserId: userId, ChannelId: channel.id });
+            ResponseMessage(res, 201, Success.create);
+        }
+    }
+
+    //Find a relation between User and  channel
+    async findUserChannel(userId, channelId) {
+
+        try {
+            const userChannel = await UserChannel.findOne({
+                where: {
+                    UserId: userId,
+                    ChannelId: channelId
+                }
+            })
+
+            return userChannel != null;
+        } catch (error) {
+            console.error('Error al buscar el canal del usuario: ', error);
+            return false;
+        }
+    }
+
+    //add channel to playlist
+    async addChannelToPlaylist(playListId, chno) {
+    
+        try {
+
+            const playlist = await Playlist.findByPk(playListId);
+            const channel = await Channel.findByPk(chno.id);
+    
+            if (!playlist || !channel) {
+                return res.status(404).json({ message: 'Playlist o Canal no encontrado.' });
+            }
+    
+            // Verificar si el canal ya está en la playlist
+            const existingRelation = await playlist.hasChannel(channel);
+    
+            if (existingRelation) {
+                return res.status(400).json({ message: 'El canal ya está en la playlist.' });
+            }
+    
+            // Agregar el canal a la playlist
+            await playlist.addChannel(channel);
+    
+            return res.status(201).json({ message: 'Canal agregado a la playlist exitosamente.' });
+        } catch (error) {
+            console.error("Error al agregar el canal a la playlist: ", error);
+            return res.status(500).json({ message: 'Error al agregar el canal a la playlist.' });
+        }
+    }
+    
 
     /******************************************************************
      * Updates a channel.
@@ -127,7 +197,7 @@ class ChannelLogic {
             if (!data) return ResponseMessage(res, 400, Error.channel.emptyFile);
             const groupGeneral = await getGeneralGroup(playListId);
             console.log(groupGeneral);
-            const importInfo = await importChannels(data, Channel ,playListId, groupGeneral.id);
+            const importInfo = await importChannels(data, Channel, playListId, groupGeneral.id);
 
             if (importInfo.channels.length === 0) return ResponseMessage(res, 400, Error.channel.notChannelsImported);
 
@@ -140,9 +210,9 @@ class ChannelLogic {
     async createAllChannels(req, res) {
         const { body } = req;
         try {
-            if(body.length === 0) return ResponseMessage(res, 400, Error.create);
+            if (body.length === 0) return ResponseMessage(res, 400, Error.create);
 
-            const channels = await Channel.bulkCreate(body);
+            await Channel.bulkCreate(body);
             ResponseMessage(res, 201, Success.create);
         } catch {
             ResponseMessage(res, 400, Error.create);

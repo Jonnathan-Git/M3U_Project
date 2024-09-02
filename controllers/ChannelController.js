@@ -1,4 +1,4 @@
-import ChannelLogic from "../logic/channel_logics/channel.js";
+import ChannelLogic from "../logic/channel_logics/Channel.js";
 
 /******************************************************************
  * Controller class for managing channels.
