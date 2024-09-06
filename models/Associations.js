@@ -2,6 +2,7 @@ import User from './db/User.js';
 import Channel from './db/Channel.js';
 import PlayList from './db/Playlist.js';
 import Group from './db/Group.js';
+import PlaylistChannel from './db/PlaylistChannel.js';
 import UserChannel from './db/UserChannel.js'
 
 
@@ -22,8 +23,8 @@ class Associations {
         /* PlayList.hasMany(Channel);
         Channel.belongsTo(PlayList); */
         
-        PlayList.belongsToMany(Channel, {through: 'PlaylistChannels'});
-        Channel.belongsToMany(PlayList, {through: 'PlaylistChannels'});
+        PlayList.belongsToMany(Channel, {through: PlaylistChannel});
+        Channel.belongsToMany(PlayList, {through: PlaylistChannel});
 
         /**********************************************************
          * This is a one-to-many relationship between the User and Group models.

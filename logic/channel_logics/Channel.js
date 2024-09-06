@@ -2,11 +2,18 @@ import Channel from "../../models/db/Channel.js";
 import Playlist from "../../models/db/Playlist.js"
 import { Success, Error } from "../../lang/es-Es/Messages.js";
 import { ResponseMessage } from "../general/ResponseMessage.js";
-import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerifyChannels.js";
+import {
+    verifyActiveUrlChannels,
+    verifyUrlChannels,
+    userChannelRelationVerification,
+    playlistChannelRelationVerification,
+    findUserChannel
+} from "./VerificationService.js";
 import updateFields from "../general/UpdateFields.js";
 import { importChannels } from "./ImportChannels.js";
 import { getGeneralGroup } from "../group_logics/ChannelsByGroup.js";
 import UserChannel from '../../models/db/UserChannel.js';
+import PlaylistChannel from '../../models/db/PlaylistChannel.js'
 
 
 /*************************************************************************
@@ -33,75 +40,51 @@ class ChannelLogic {
                 channel = existingChannel;
             } else {
                 channel = await Channel.create(body);
-                this.addChannelToPlaylist(body.PlayListId, channel);
             }
-            this.checkOrAddChannel(res, body.UserId, channel);
+            await this.addUserChannel(res, body.UserId, channel);
+            await this.addChannelToPlaylist(res, body.PlayListId, channel);
+            ResponseMessage(res, 201, Success.create);
 
-
-        } catch (error){
+        } catch (error) {
             ResponseMessage(res, 400, Error.create, error.message);
         }
     }
 
     /* checks if the user already has the channel added, if not add the channel for that user */
-    async checkOrAddChannel(res, userId, channel) {
+    async addUserChannel(res, userId, channel) {
 
-        const existUserChannel = await this.findUserChannel(userId, channel.id);
+        const existUserChannel = await findUserChannel(UserChannel,userId, channel.id);
         if (existUserChannel) {
             return ResponseMessage(res, 400, Error.channel.channelExists);
-        } else {
-            await UserChannel.create({ UserId: userId, ChannelId: channel.id });
-            ResponseMessage(res, 201, Success.create);
         }
+        await UserChannel.create({ UserId: userId, ChannelId: channel.id });
     }
 
-    //Find a relation between User and  channel
-    async findUserChannel(userId, channelId) {
-
-        try {
-            const userChannel = await UserChannel.findOne({
-                where: {
-                    UserId: userId,
-                    ChannelId: channelId
-                }
-            })
-
-            return userChannel != null;
-        } catch (error) {
-            console.error('Error al buscar el canal del usuario: ', error);
-            return false;
-        }
-    }
 
     //add channel to playlist
-    async addChannelToPlaylist(playListId, chno) {
-    
+    async addChannelToPlaylist(res, playListId, chno) {
+
         try {
 
             const playlist = await Playlist.findByPk(playListId);
             const channel = await Channel.findByPk(chno.id);
-    
-            if (!playlist || !channel) {
-                return res.status(404).json({ message: 'Playlist o Canal no encontrado.' });
-            }
-    
+
             // Verificar si el canal ya está en la playlist
             const existingRelation = await playlist.hasChannel(channel);
-    
+
             if (existingRelation) {
-                return res.status(400).json({ message: 'El canal ya está en la playlist.' });
+                return ResponseMessage(res, 400, Error.channel.channelExistOnPlaylist);
             }
-    
+
             // Agregar el canal a la playlist
             await playlist.addChannel(channel);
-    
-            return res.status(201).json({ message: 'Canal agregado a la playlist exitosamente.' });
+
         } catch (error) {
             console.error("Error al agregar el canal a la playlist: ", error);
-            return res.status(500).json({ message: 'Error al agregar el canal a la playlist.' });
+            ResponseMessage(res, 500, Error.channel.addOnPlaylist_Error);
         }
     }
-    
+
 
     /******************************************************************
      * Updates a channel.
@@ -169,10 +152,11 @@ class ChannelLogic {
      * @returns {Promise<void>} - A promise that resolves when the channel is deleted.
      *****************************************************************/
     async deleteChannel(req, res) {
-        const { id } = req.params;
+        const { userId, channelId, playlistId } = req.params;
         try {
-            const channelDeleteds = await Channel.destroy({ where: { id: id } });
-            if (channelDeleteds === 0) return ResponseMessage(res, 404, Error.channel.notExists);
+            const deletedUserChannel = await UserChannel.destroy({ where: { UserId: userId, ChannelId: channelId } });
+            await PlaylistChannel.destroy({ where: { PlayListId: playlistId, ChannelId: channelId } });
+            if (deletedUserChannel === 0) return ResponseMessage(res, 404, Error.channel.notExists);
             ResponseMessage(res, 200, Success.delete);
         } catch (error) {
             ResponseMessage(res, 400, Error.delete);
@@ -209,17 +193,29 @@ class ChannelLogic {
 
     async createAllChannels(req, res) {
         const { body } = req;
+        const { userId, playlistId } = req.query;
+
         try {
             if (body.length === 0) return ResponseMessage(res, 400, Error.create);
 
-            await Channel.bulkCreate(body);
+            const channels = await Channel.bulkCreate(body);
+            const userChannelData = await userChannelRelationVerification(channels, userId, UserChannel);
+            const playlistChannelData = await playlistChannelRelationVerification(channels, playlistId, PlaylistChannel);
+
+            const userChannelRelations = (await Promise.all(userChannelData)).filter(Boolean);
+            const playlistChannelRelations = (await Promise.all(playlistChannelData)).filter(Boolean);
+            if (userChannelRelations) { await UserChannel.bulkCreate(userChannelRelations); }
+            if (playlistChannelRelations) { await PlaylistChannel.bulkCreate(playlistChannelRelations); }
+
             ResponseMessage(res, 201, Success.create);
         } catch {
             ResponseMessage(res, 400, Error.create);
         }
     }
-    //OBTENER CANALES POR GRUPO
 
+
+
+    //OBTENER CANALES POR GRUPO
     async getChannelsByGroup(req, res) {
         const { groupId } = req.params;
         try {

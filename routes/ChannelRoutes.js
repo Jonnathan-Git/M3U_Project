@@ -16,7 +16,7 @@ class ChannelRoutes {
         this.router_channel.put('/', Auth.AuthenticateToken, this.controller.updateChannel);
         this.router_channel.get('/:id', Auth.AuthenticateToken, this.controller.getChannelById);
         this.router_channel.get('/group/:groupId', this.controller.getChannelsByGroup);
-        this.router_channel.delete('/:id', Auth.AuthenticateToken, this.controller.deleteChannel);
+        this.router_channel.delete('/:userId/:channelId/:playlistId', Auth.AuthenticateToken, this.controller.deleteChannel);
         this.router_channel.post('/import', Auth.AuthenticateToken, this.upload.single('file'), this.controller.import);
         this.router_channel.post('/createAllChannels', Auth.AuthenticateToken, this.controller.createAllChannels);
         this.router_channel.put('/changeChannelGroup',  this.controller.changeChannelGroup);

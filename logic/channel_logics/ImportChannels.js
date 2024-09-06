@@ -1,5 +1,5 @@
 import { STARTREGEX, VALIDTAGS } from "./ImportConstants.js";
-import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerifyChannels.js";
+import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerificationService.js";
 
 /******************************************************************
  * Imports channels from a file and performs various validations.
@@ -8,7 +8,7 @@ import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerifyChannels.js"
  * @param {string} userId - The ID of the user.
  * @returns {Promise<{channels: Array, trashChannels: Array, repeatChannels: Array}>} - An object containing the imported channels, trash channels, and repeat channels.
  *****************************************************************/
-export async function importChannels(fileData, ModelChannel, playlistId,groupId) {
+export async function importChannels(fileData, ModelChannel,groupId) {
 
     const channels = [];
     const trashChannels = [];
@@ -20,8 +20,7 @@ export async function importChannels(fileData, ModelChannel, playlistId,groupId)
     await Promise.all(lines.map(async line => {
         const channel = await processLine(line);
         if (!await verifyActiveUrlChannels(channel.url)) return trashChannels.push(channel);
-        if (!await verifyUrlChannels(channel.url, ModelChannel)) return repeatChannels.push(channel);
-        channel.PlayListId = playlistId;
+        if (await verifyUrlChannels(channel.url, ModelChannel)) return repeatChannels.push(channel);
         channel.GroupId = groupId;
         channels.push(channel);
     }));
