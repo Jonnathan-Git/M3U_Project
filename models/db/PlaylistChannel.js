@@ -3,11 +3,19 @@ import { DataTypes } from "sequelize"
 
 const PlaylistChannel = DataBase.define('PlaylistChannel', {
     channelPosition: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 },
     {
-        timestamps: false
+        timestamps: false,
+        indexes: [
+            {
+                unique: true,
+                fields: ['PlayListId', 'ChannelId'],
+                name: 'playlist_channel_unique'
+            }
+        ]
     });
 
 export default PlaylistChannel;

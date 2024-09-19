@@ -12,7 +12,7 @@ export async function importChannels(fileData, ModelChannel,groupId) {
 
     const channels = [];
     const trashChannels = [];
-    const repeatChannels = [];
+    //const repeatChannels = [];
 
     fileData = fileData.replace("#EXTM3U", '');
     const lines = fileData.split('#').slice(1);
@@ -20,12 +20,12 @@ export async function importChannels(fileData, ModelChannel,groupId) {
     await Promise.all(lines.map(async line => {
         const channel = await processLine(line);
         if (!await verifyActiveUrlChannels(channel.url)) return trashChannels.push(channel);
-        if (await verifyUrlChannels(channel.url, ModelChannel)) return repeatChannels.push(channel);
+        //if (await verifyUrlChannels(channel.url, ModelChannel)) return repeatChannels.push(channel);
         channel.GroupId = groupId;
         channels.push(channel);
     }));
 
-    return { channels, trashChannels, repeatChannels };
+    return { channels, trashChannels }; /*  { channels, trashChannels, repeatChannels }; */
 }
 
 /******************************************************************

@@ -23,8 +23,8 @@ class Associations {
         /* PlayList.hasMany(Channel);
         Channel.belongsTo(PlayList); */
         
-        PlayList.belongsToMany(Channel, {through: PlaylistChannel});
-        Channel.belongsToMany(PlayList, {through: PlaylistChannel});
+        PlayList.belongsToMany(Channel, {through: PlaylistChannel, uniqueKey: 'playlist_channel_unique'});
+        Channel.belongsToMany(PlayList, {through: PlaylistChannel, uniqueKey: 'playlist_channel_unique'});
 
         /**********************************************************
          * This is a one-to-many relationship between the User and Group models.
@@ -37,8 +37,6 @@ class Associations {
 
         User.belongsToMany(Channel, {through: UserChannel});
         Channel.belongsToMany(User, {through: UserChannel});
-
-
 
     }
 }

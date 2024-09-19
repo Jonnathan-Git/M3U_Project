@@ -53,7 +53,7 @@ class ChannelLogic {
     /* checks if the user already has the channel added, if not add the channel for that user */
     async addUserChannel(res, userId, channel) {
 
-        const existUserChannel = await findUserChannel(UserChannel,userId, channel.id);
+        const existUserChannel = await findUserChannel(UserChannel, userId, channel.id);
         if (existUserChannel) {
             return ResponseMessage(res, 400, Error.channel.channelExists);
         }
@@ -76,8 +76,11 @@ class ChannelLogic {
                 return ResponseMessage(res, 400, Error.channel.channelExistOnPlaylist);
             }
 
-            // Agregar el canal a la playlist
+            // save channel and update amount playlist property
             await playlist.addChannel(channel);
+            const count = await playlist.countChannels();
+            playlist.amount = count;
+            await playlist.save(); //save on Db
 
         } catch (error) {
             console.error("Error al agregar el canal a la playlist: ", error);
@@ -180,10 +183,10 @@ class ChannelLogic {
             const data = file.buffer.toString('utf8');
             if (!data) return ResponseMessage(res, 400, Error.channel.emptyFile);
             const groupGeneral = await getGeneralGroup(playListId);
-            console.log(groupGeneral);
-            const importInfo = await importChannels(data, Channel, playListId, groupGeneral.id);
+            console.log(groupGeneral)
+            const importInfo = await importChannels(data, Channel, groupGeneral.id);
 
-            if (importInfo.channels.length === 0) return ResponseMessage(res, 400, Error.channel.notChannelsImported);
+            //if (importInfo.channels.length === 0) return ResponseMessage(res, 400, Error.channel.notChannelsImported);
 
             ResponseMessage(res, 200, Success.get, importInfo.channels);
         } catch (error) {
@@ -194,23 +197,49 @@ class ChannelLogic {
     async createAllChannels(req, res) {
         const { body } = req;
         const { userId, playlistId } = req.query;
+        const repeatedChannels = [];
 
         try {
             if (body.length === 0) return ResponseMessage(res, 400, Error.create);
 
-            const channels = await Channel.bulkCreate(body);
-            const userChannelData = await userChannelRelationVerification(channels, userId, UserChannel);
-            const playlistChannelData = await playlistChannelRelationVerification(channels, playlistId, PlaylistChannel);
+            const channelPromises = body.map(async (channelRecord) => {
+                const repeatedChannel = await verifyUrlChannels(channelRecord.url, Channel);
+                if (!repeatedChannel) {
+                    return channelRecord
+                }
+                repeatedChannels.push(repeatedChannel);
 
-            const userChannelRelations = (await Promise.all(userChannelData)).filter(Boolean);
-            const playlistChannelRelations = (await Promise.all(playlistChannelData)).filter(Boolean);
-            if (userChannelRelations) { await UserChannel.bulkCreate(userChannelRelations); }
-            if (playlistChannelRelations) { await PlaylistChannel.bulkCreate(playlistChannelRelations); }
+                return null;
+            });
+
+            const unrepeatedChannels = (await Promise.all(channelPromises)).filter(Boolean);
+            if (unrepeatedChannels) {
+                const bulkCreateResult = await Channel.bulkCreate(unrepeatedChannels);
+                const userChannelData = await userChannelRelationVerification(bulkCreateResult, userId, UserChannel);
+                const playlistChannelData = await playlistChannelRelationVerification(bulkCreateResult, playlistId, PlaylistChannel);
+                await this.setRelations(userChannelData, playlistChannelData);
+            }
+
+            const userChannelDt = await userChannelRelationVerification(repeatedChannels, userId, UserChannel);
+            const playlistChannelDt = await playlistChannelRelationVerification(repeatedChannels, playlistId, PlaylistChannel);
+            await this.setRelations(userChannelDt, playlistChannelDt);
+
+            const count = await PlaylistChannel.count({where: {playlistId}});
+            await Playlist.update({amount: count}, {where: {id: playlistId}});
 
             ResponseMessage(res, 201, Success.create);
-        } catch {
+        } catch (error) {
             ResponseMessage(res, 400, Error.create);
         }
+    }
+
+    //Set relation to user/channnel and playlist/channel
+    async setRelations(userChannelData, playlistChannelData) {
+        const userChannelRecords = (await Promise.all(userChannelData)).filter(Boolean);
+        const playlistChannelRecords = (await Promise.all(playlistChannelData)).filter(Boolean);
+        if (userChannelRecords) { await UserChannel.bulkCreate(userChannelRecords); }
+        if (playlistChannelRecords) { await PlaylistChannel.bulkCreate(playlistChannelRecords); }
+        
     }
 
 

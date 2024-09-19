@@ -36,7 +36,7 @@ export async function userChannelRelationVerification(channels, userId, UserChan
 }
 
 //Find a relation between User and  channel
-async function findUserChannel(UserChannel, userId, channelId) {
+export async function findUserChannel(UserChannel, userId, channelId) {
 
     try {
         const userChannel = await UserChannel.findOne({
