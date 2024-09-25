@@ -1,5 +1,5 @@
 import { STARTREGEX, VALIDTAGS } from "./ImportConstants.js";
-import { verifyActiveUrlChannels, verifyUrlChannels } from "./VerificationService.js";
+import { verifyActiveUrlChannels } from "./VerificationService.js";
 
 /******************************************************************
  * Imports channels from a file and performs various validations.

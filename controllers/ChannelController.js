@@ -36,6 +36,16 @@ class ChannelController {
         await this.channel_logic.getChannelById(req, res);
     }
 
+    /* Set user-channel, playlist-channel relation */
+    setRelationOnUserAndPlaylist = async (req, res) => {
+        await this.channel_logic.setChannelOnPlaylistAndUser(req, res);
+    }
+
+    /* Verify if chanel exist */
+    getExistingChannel = async (req, res) => {
+        await this.channel_logic.getChannelByUrl(req, res);
+    }
+
     /******************************************************************
      * Deletes a channel.
      * @param {Object} req - The request object.
@@ -56,6 +66,10 @@ class ChannelController {
 
     createAllChannels = async (req, res) => {
         await this.channel_logic.createAllChannels(req, res);
+    }
+
+    updateChannelsPositions = async (req, res) => {
+        await this.channel_logic.update_channelsPositon(req, res);
     }
     
     getChannelsByGroup = async (req, res) => {

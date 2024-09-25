@@ -24,7 +24,12 @@ const UserChannel = DataBase.define('UserChannel',
         }
     },
     {
-        timestamps: false
+        timestamps: false,
+        indexes: [{
+            unique: true,
+            fields: ['UserId', 'ChannelId'],
+            name: 'user_channel_unique'
+        }]
     }
 );
 

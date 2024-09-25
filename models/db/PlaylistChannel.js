@@ -1,21 +1,31 @@
 import DataBase from "../../database/Connection.js"
+import PlayList from "./Playlist.js";
+import Channel from "./Channel.js";
 import { DataTypes } from "sequelize"
 
 const PlaylistChannel = DataBase.define('PlaylistChannel', {
-    channelPosition: {
+    PlayListId: {
+        type: DataTypes.UUID,
+        references: {
+            model: PlayList,
+            key: 'id'
+        }
+    },
+    ChannelId: {
+        type: DataTypes.UUID,
+        references: {
+            model: Channel,
+            key: 'id'
+        }
+    },
+    position: {
         type: DataTypes.INTEGER,
         defaultValue: 0
     }
 },
     {
         timestamps: false,
-        indexes: [
-            {
-                unique: true,
-                fields: ['PlayListId', 'ChannelId'],
-                name: 'playlist_channel_unique'
-            }
-        ]
+        tableName: 'PlaylistChannel',
     });
 
 export default PlaylistChannel;

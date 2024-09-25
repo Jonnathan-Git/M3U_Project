@@ -48,7 +48,6 @@ export async function findUserChannel(UserChannel, userId, channelId) {
 
         return userChannel != null;
     } catch (error) {
-        console.error('Error al buscar el canal del usuario: ', error);
         return false;
     }
 }
