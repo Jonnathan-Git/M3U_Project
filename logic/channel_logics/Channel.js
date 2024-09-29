@@ -44,18 +44,18 @@ class ChannelLogic {
     /* Set channel relation with user and channel */
     async setChannelOnPlaylistAndUser(req, res) {
         const { userId, playlistId, channelId } = req.query;
-        await this.addUserChannel(res, userId, channelId);
-        await this.addChannelToPlaylist(res, playlistId, channelId);
+        await this.addUserChannel(res, userId, playlistId, channelId);
     }
 
     /* checks if the user already has the channel added, if not add the channel for that user */
-    async addUserChannel(res, userId, channelId) {
+    async addUserChannel(res, userId, playlistId, channelId) {
 
         const existUserChannel = await findUserChannel(UserChannel, userId,  channelId);
         if (existUserChannel) {
             return ResponseMessage(res, 400, Error.channel.channelExists);
         }
         await UserChannel.create({ UserId: userId, ChannelId: channelId });
+        await this.addChannelToPlaylist(res, playlistId, channelId);
     }
 
 
@@ -78,6 +78,7 @@ class ChannelLogic {
             const count = await playlist.countChannels();
             playlist.amount = count;
             await playlist.save(); //save on Db
+            ResponseMessage(res, 200, Success.create);
 
         } catch (error) {
             ResponseMessage(res, 500, Error.channel.addOnPlaylist_Error);
@@ -169,6 +170,10 @@ class ChannelLogic {
             const deletedUserChannel = await UserChannel.destroy({ where: { UserId: userId, ChannelId: channelId } });
             await PlaylistChannel.destroy({ where: { PlayListId: playlistId, ChannelId: channelId } });
             if (deletedUserChannel === 0) return ResponseMessage(res, 404, Error.channel.notExists);
+            const playlist = await Playlist.findByPk(playlistId);
+            const count = await playlist.countChannels();
+            playlist.amount = count;
+            await playlist.save();
             ResponseMessage(res, 200, Success.delete);
         } catch (error) {
             ResponseMessage(res, 400, Error.delete);

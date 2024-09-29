@@ -31,7 +31,7 @@ class Server {
     middlewares() {
         this.app.use(cors({
             methods: ['GET', 'POST', 'PUT', 'DELETE'],
-            // origin: 'http://localhost:3000'
+            origin: 'https://localhost'
         }));
 
         //Reading and parsing of the body
