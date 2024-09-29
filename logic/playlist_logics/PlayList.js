@@ -5,6 +5,7 @@ import Channel from "../../models/db/Channel.js";
 import updateFields from "../general/UpdateFields.js";
 import CreateFile from "./CreateFile.js";
 import { getGeneralGroup } from "../group_logics/ChannelsByGroup.js";
+import PlaylistChannel from '../../models/db/PlaylistChannel.js'
 
 class PlayListLogic {
 
@@ -45,18 +46,25 @@ class PlayListLogic {
 
         try {
             const playlist = await PlayList.findOne({
-                where: { id },
+                where: { 
+                    id: id
+                 },
                 include: {
                     model: Channel,
-                    attributes: { exclude: ['PlayListId'] }
-                }
+                    through: {
+                        model: PlaylistChannel,
+                        attributes: ['position'],
+                    },
+                },
+               
             });
 
             if (!playlist) { return ResponseMessage(res, 404, Error.notFound); }
-
+            playlist.Channels = playlist.Channels.sort((objA, objB) => objA.PlaylistChannel.position - objB.PlaylistChannel.position);
             ResponseMessage(res, 200, Success.get, playlist);
 
-        } catch {
+        } catch(error) {
+            console.log(error);
             ResponseMessage(res, 400, Error.get);
         }
     }

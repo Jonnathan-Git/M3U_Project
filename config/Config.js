@@ -4,7 +4,7 @@ import fs from 'fs';
  * @type {Buffer}
  **********************************************************/
 const rawData = fs.readFileSync('./config/config.json');
-// const Config = JSON.parse(rawData).development;
-const Config = JSON.parse(rawData).production;
+const Config = JSON.parse(rawData).development;
+//const Config = JSON.parse(rawData).production;
 
 export default Config;

@@ -1,7 +1,7 @@
 {
     "development": {
         "PORT": 4000,
-        "user": "m3u",
+        "user": "usuario1",
         "password": "12345678",
         "database": "m3u_project",
         "host": "localhost",
