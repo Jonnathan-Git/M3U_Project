@@ -29,6 +29,8 @@ class Server {
      * be used to handle the requests.
      ********************************************************/
     middlewares() {
+
+        this.app.options('*', cors())
         this.app.use(cors({
             methods: ['GET', 'POST', 'PUT', 'DELETE'],
             origin: 'https://localhost'
