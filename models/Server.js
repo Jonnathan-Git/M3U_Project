@@ -30,9 +30,10 @@ class Server {
      ********************************************************/
     middlewares() {
 
-        this.app.options('*', cors())
         this.app.use(cors({
-            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            origin: 'http://10.235.26.57:8100',
+            
         }));
 
         //Reading and parsing of the body
