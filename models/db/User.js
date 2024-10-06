@@ -26,10 +26,6 @@ const User = DataBase.define("Users", {
     password: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    hint: {
-        type: DataTypes.STRING(512),
-        allowNull: true
     }
 }, {
     tableName: 'users',
