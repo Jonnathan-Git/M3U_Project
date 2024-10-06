@@ -30,18 +30,21 @@ class Server {
      ********************************************************/
     middlewares() {
 
-      /*   this.app.use(cors({
+        this.app.options('*', cors({
+            methods: ['POST', 'PUT', 'DELETE']
+        }));
+
+        this.app.use(cors({
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             origin: 'http://10.235.26.57:8100',
-            origin: true
-        })) */;
-         this.app.use((req, res, next) => {
+        }));
+/*          this.app.use((req, res, next) => {
             res.header('Access-Control-Allow-Origin', 'http://10.235.26.57:8100');
             res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, Content-Type, Accept, Access-Control-Allow-Request-Method');
             res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
             res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
             next();
-        })
+        }) */
 
         //Reading and parsing of the body
         this.app.use(express.json());
