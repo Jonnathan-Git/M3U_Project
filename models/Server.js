@@ -33,7 +33,7 @@ class Server {
         this.app.use(cors({
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             origin: 'http://10.235.26.57:8100',
-            
+            origin: true
         }));
 
         //Reading and parsing of the body
