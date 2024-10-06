@@ -52,7 +52,7 @@ class UserLogic {
             }
 
             body.password = bcrypt.hashSync(body.password, 10);
-            body.hint = bcrypt.hashSync(body.hint, 10);
+            //body.hint = bcrypt.hashSync(body.hint, 10);
             const user = await User.create(body);
 
             ResponseMessage(res, 201, Success.create, user);

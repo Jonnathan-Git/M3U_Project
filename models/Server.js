@@ -30,10 +30,6 @@ class Server {
      ********************************************************/
     middlewares() {
 
-        this.app.options('*', cors({
-            methods: ['POST', 'PUT', 'DELETE']
-        }));
-
         this.app.use(cors({
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             origin: 'http://localhost:8100',
