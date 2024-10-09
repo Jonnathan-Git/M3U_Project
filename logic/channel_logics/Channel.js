@@ -292,7 +292,7 @@ class ChannelLogic {
             await Promise.all(updates);
             ResponseMessage(res, 200, Success.update);
         } catch (error) {
-            ResponseMessage(res, 400, Error.update);
+            ResponseMessage(res, 500, Error.update);
         }
 
     }

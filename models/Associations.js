@@ -39,8 +39,8 @@ class Associations {
         PlayList.hasMany(Group);
         Group.belongsTo(PlayList);
 
-        User.belongsToMany(Channel, {through: UserChannel, uniqueKey: 'user_channel_unique'});
-        Channel.belongsToMany(User, {through: UserChannel, uniqueKey: 'user_channel_unique'});
+        User.belongsToMany(Channel, {through: UserChannel});
+        Channel.belongsToMany(User, {through: UserChannel});
 
     }
 }

@@ -23,7 +23,8 @@ class PlayListLogic {
         const { userId } = req.params;
         try {
             const playlist = await PlayList.findAll({
-                where: { userId }
+                where: { userId },
+                order: [['index_position', 'DESC']]
             });
 
             if (!playlist) { return ResponseMessage(res, 404, Error.notFound); }
@@ -53,14 +54,13 @@ class PlayListLogic {
                     model: Channel,
                     through: {
                         model: PlaylistChannel,
-                        attributes: ['position'],
+                        attributes: [],
                     },
                 },
-               
             });
 
             if (!playlist) { return ResponseMessage(res, 404, Error.notFound); }
-            playlist.Channels = playlist.Channels.sort((objA, objB) => objA.PlaylistChannel.position - objB.PlaylistChannel.position);
+            playlist.Channels = playlist.Channels.sort((itemA, itemB) => itemA.PlaylistChannel.position - itemB.PlaylistChannel.position);
             ResponseMessage(res, 200, Success.get, playlist);
 
         } catch(error) {
@@ -113,6 +113,30 @@ class PlayListLogic {
             ResponseMessage(res, 400, Error.update);
         }
     }
+
+     /******************************************************************
+     * Deletes a playlist by its ID.
+     *
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @returns {Promise<void>} - A promise that resolves when the playlist is deleted.
+     *****************************************************************/
+
+     async updateIndex_position(req, res){
+        const {playlists} = req;
+
+       try {
+        const promises = playlists.map(async(playlist) => {
+            return await PlayList.update({index_position: playlist.index_position}, {where: playlist.id})
+        });
+
+        await Promise.all(promises);
+
+        ResponseMessage(res, 200, Success.update);
+       } catch (error) {
+        ResponseMessage(res, 500, Error.update);
+       }
+     }
 
     /******************************************************************
      * Deletes a playlist by its ID.

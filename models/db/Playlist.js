@@ -16,6 +16,10 @@ const PlayList = DataBase.define("PlayList", {
         allowNull: false,
         defaultValue: 0
     },
+    index_position: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
 }, {
     tableName: 'playlists',
     timestamps: false

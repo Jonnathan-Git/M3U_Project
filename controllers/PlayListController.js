@@ -45,6 +45,15 @@ class PlayListController {
         await this.playListLogic.updatePlayList(req, res);
     }
 
+      /******************************************************************
+     * Updates an existing playlist.
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     *****************************************************************/
+      updatePlaylist_Index = async (req, res) => {
+        await this.playListLogic.updateIndex_position(req, res);
+    }
+
     /******************************************************************
      * Deletes a playlist.
      * @param {Object} req - The request object.
