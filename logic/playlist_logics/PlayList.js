@@ -24,7 +24,7 @@ class PlayListLogic {
         try {
             const playlist = await PlayList.findAll({
                 where: { userId },
-                order: [['index_position', 'DESC']]
+                order: [['index_position', 'ASC']]
             });
 
             if (!playlist) { return ResponseMessage(res, 404, Error.notFound); }
@@ -127,14 +127,15 @@ class PlayListLogic {
 
        try {
         const promises = body.map(async(playlist) => {
-            return await PlayList.update({index_position: playlist.index_position}, {where: playlist.id})
+            return await PlayList.update({index_position: playlist.index_position}, {where: {id: playlist.id}})
         });
 
         await Promise.all(promises);
 
         ResponseMessage(res, 200, Success.update);
        } catch (error) {
-        ResponseMessage(res, 500, Error.update, error.message);
+        console.log(error);        
+        ResponseMessage(res, 500, Error.update);
        }
      }
 
