@@ -123,10 +123,10 @@ class PlayListLogic {
      *****************************************************************/
 
      async updateIndex_position(req, res){
-        const {playlists} = req;
+        const {body} = req;
 
        try {
-        const promises = playlists.map(async(playlist) => {
+        const promises = body.map(async(playlist) => {
             return await PlayList.update({index_position: playlist.index_position}, {where: playlist.id})
         });
 
