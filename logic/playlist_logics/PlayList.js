@@ -54,7 +54,7 @@ class PlayListLogic {
                     model: Channel,
                     through: {
                         model: PlaylistChannel,
-                        attributes: [],
+                        attributes: ['position'],
                     },
                 },
             });
