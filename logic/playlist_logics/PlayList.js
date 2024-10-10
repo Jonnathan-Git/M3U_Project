@@ -134,7 +134,7 @@ class PlayListLogic {
 
         ResponseMessage(res, 200, Success.update);
        } catch (error) {
-        ResponseMessage(res, 500, Error.update);
+        ResponseMessage(res, 500, Error.update, error.message);
        }
      }
 
