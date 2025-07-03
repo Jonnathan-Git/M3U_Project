@@ -32,7 +32,7 @@ class Server {
 
         this.app.use(cors({
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-            origin: ['http://localhost:8100', 'https://localhost'],
+            origin: ['https://m3uplayer.netlify.app'],
         }));
 
         //Reading and parsing of the body
